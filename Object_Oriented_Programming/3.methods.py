@@ -18,6 +18,8 @@ class Employee:
     def employee_tax(salary, taxPercent):
         return salary * taxPercent
 
+    # class method
+    # has access to the class reference of the class that owns it
     @classmethod
     def get_employee_salary_and_info(cls, name, salary, taxPercent):
         return cls(name, salary).getinfo() + " with tax of " + str(cls.employee_tax(salary, taxPercent))
