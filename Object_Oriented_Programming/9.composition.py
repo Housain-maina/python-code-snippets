@@ -10,7 +10,7 @@ class PreviousTeams:
 
 class Player:
     """
-    the Player class creates an object of the PreviousTeams class when during it's when it gets instantiated,
+    the Player class creates an object of the PreviousTeams class when it's when it gets instantiated,
     therefore deleting the Player class instance will also delete the PreviousTeams class it instantiated.
     """
     def __init__(self, name, previous_teams=0):
