@@ -130,3 +130,18 @@ dmypy.json
 
 # .idea folder
 .idea/
+
+.DS_Store
+*.sqlite3
+media/
+*.pyc
+*.db
+*.pid
+
+# Ignore Django Migrations in Development if you are working on team
+
+# Only for Development
+**/migrations/**
+**/fixtures/**
+!**/migrations
+!**/migrations/__init__.py
