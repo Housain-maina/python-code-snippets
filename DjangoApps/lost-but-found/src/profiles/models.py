@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 import uuid
 import os
 from django_resized import ResizedImageField
@@ -20,7 +19,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE)
     gender = models.CharField(max_length=1, choices=(("M", "Male"), ("F", "Female")))
-    date_of_birth = models.DateField(blank=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     country = models.CharField(max_length=256, blank=True)
     state = models.CharField(max_length=256, blank=True)
     address = models.CharField(max_length=256, blank=True)
