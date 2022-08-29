@@ -8,6 +8,9 @@ admin.site.site_header = "LOST BUT FOUND ADMIN"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),
+    path("auth/", include("djoser.social.urls")),
     path("accounts/", include("accounts.urls")),
     path("profiles/", include("profiles.urls")),
 ]

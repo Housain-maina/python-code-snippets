@@ -1,6 +1,7 @@
+from datetime import timedelta
 from pathlib import Path
-from environs import Env
 import os.path
+from environs import Env
 
 
 env = Env()
@@ -36,11 +37,15 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "profiles.apps.ProfilesConfig",
     # third party apps
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.facebook",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "djoser",
+    "django_filters",
+    "social_django",
+    "drf_yasg",
+
 ]
 
 MIDDLEWARE = [
@@ -51,6 +56,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Third-party middlewares
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -134,9 +141,69 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-SITE_ID = 1
+SITE_ID = 3
 
-# Email config
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 25,
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:3000"],
+    "PASSWORD_RESET_CONFIRM_URL": "auth/users/password/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": False,
+    "ACTIVATION_URL": "auth/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "USER_CREATE_PASSWORD_RETYPE": False,
+    "SET_PASSWORD_RETYPE": False,
+    "TOKEN_MODEL": None,
+    "SERIALIZERS": {},
+    "EMAIL": {"activation": "accounts.email.ActivationEmail"},
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env.int("ACCESS_TOKEN_LIFETIME")),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30) if DEBUG else timedelta(days=env.int("REFRESH_TOKEN_LIFETIME")),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "access",
+    "JTI_CLAIM": "jti",
+   }
+
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.twitter.TwitterOAuth",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = env.list("SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE")
+
+# SOCIAL_AUTH_JSONFIELD_ENABLED = True # uncomment if using postgresql
+
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = env.list("SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS")
+
 if DEBUG:
     EMAIL_BACKEND = env.str("DEV_EMAIL_BACKEND")
     EMAIL_HOST = env.str("DEV_EMAIL_HOST")
@@ -152,9 +219,8 @@ else:
     EMAIL_HOST_USER = env.str("PROD_EMAIL_HOST_USER")
     EMAIL_HOST_PASSWORD = env.str("PROD_EMAIL_HOST_PASSWORD")
 
-# Allauth config
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+
+CORS_ALLOW_CREDENTIALS = env.bool("CORS_ALLOW_CREDENTIALS")
