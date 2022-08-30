@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 
 class CustomUserAdmin(UserAdmin):
-    """Define admin model for custom User model with no username field."""
+    """Define admin model for customs User model with no username field."""
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),

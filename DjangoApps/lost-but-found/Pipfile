@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "==4.0.5"
+django = "==3.2.15"
 environs = "==9.5.0"
 djoser = "==2.1.0"
 django-filter = "==22.1"
-social-auth-app-django = "==5.0.0"
 djangorestframework = "==3.13.1"
 pillow = "==9.1.1"
 django-resized = "==1.0.1"
 django-cors-headers = "*"
 drf-yasg = "==1.21.3"
+psycopg2-binary = "*"
 
 [dev-packages]
 

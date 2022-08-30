@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "django_filters",
     "social_django",
     "drf_yasg",
-
 ]
 
 MIDDLEWARE = [
@@ -86,8 +85,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "HOST": "db",
+        "PORT": 5432,
     }
 }
 
@@ -188,7 +190,7 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "access",
     "JTI_CLAIM": "jti",
-   }
+}
 
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
@@ -200,7 +202,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = env.list("SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE")
 
-# SOCIAL_AUTH_JSONFIELD_ENABLED = True # uncomment if using postgresql
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = env.list("SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS")
 
@@ -218,8 +220,6 @@ else:
     EMAIL_USE_TLS = env.bool("PROD_EMAIL_USE_TLS")
     EMAIL_HOST_USER = env.str("PROD_EMAIL_HOST_USER")
     EMAIL_HOST_PASSWORD = env.str("PROD_EMAIL_HOST_PASSWORD")
-
-# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
