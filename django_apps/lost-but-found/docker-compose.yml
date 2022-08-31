@@ -8,6 +8,7 @@ services:
       - .:/lost-but-found
     ports:
       - "8000:8000"
+      - "2525:2525"
     depends_on:
       - db
 
